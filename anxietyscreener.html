@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>RGC Screener</title>
+
+		<link href="Website/css/bootstrap.min.css" rel="stylesheet">
+		<link href="Website/css/app.css" rel="stylesheet">
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="/">Home</span></a></li>
+						<li><a href="#">About Us</a></li>
+						<li><a href="#">Contact Us</a></li>
+						<li><a href="#">Frequently Asked Questions</a></li>
+						<li><a href="#">Helping Others Get Help</a></li>
+						<li><a href="#">Interesting Articles</a></li>
+						<li><a href="#">Personnel</a></li>
+						<li><a href="/viewLinks">Resources</a></li>
+						<li><a href="#">RGC In Press</a></li>
+						<li><a href="#">Services Provided</a></li>
+						<li><a href="#">Upcoming Events</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<ul class="nav nav-tabs" style="display:none" role="tablist" id="myTab">
+			<li role="presentation" class="active"><a href="#screener" aria-controls="screener" role="tab" data-toggle="tab">screener</a></li>
+			<li role="presentation"><a href="#results" aria-controls="results" role="tab" data-toggle="tab">results</a></li>
+		</ul>
+		<div class="container">
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active" id="screener">
+					<form id = "anxiety-form">
+						<div id = "questions"></div>
+						<button type="submit" class="btn btn-default">Submit</button>
+					</form>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="results">
+					<div class = 'results-analysis' id = 'minimal-anxiety'>
+						<h2>Test results: minimal anxiety</h2>
+					</div>
+					<div class = 'results-analysis' id = 'mild-anxiety'>
+						<h2>Test results: mild anxiety</h2>
+					</div>
+					<div class = 'results-analysis' id = 'moderate-anxiety'>
+						<h2>Test results: moderate anxiety</h2>
+					</div>
+					<div class = 'results-analysis' id = 'severe-anxiety'>
+						<h2>Test results: severe anxiety</h2>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<script type = "text/template" id = "questiontemplate">
+		<div>
+				<%= qns.question %>
+			<div class="row btn-group col-md-12 col-md-offset-1"  data-toggle="buttons">
+				<%
+					print(_.map(qns.options, function(ans, id){
+						return optcomp({answer: ans.answer, 
+							optname: ["question",qnsid].join("-"), 
+							value: id,
+							optid: ["question",qnsid,"option", id].join("-")
+						});
+					}).join("\n"));
+				%>
+			</div>
+		</div>
+		</script>
+		<script type = "text/template" id = "answertemplate">
+		<label class="btn btn-primary col-md-2" style="margin:10px">
+			<input type="radio" name="<%= optname %>" id="<%= optid %>" value="<%= value %>" autocomplete="off">
+			<%= answer %>
+		</label>
+		</script>
+
+
+		<script src="Website/js/jquery-1.11.2.min.js"></script>
+		<script src="Website/js/bootstrap.min.js"></script>
+		<script src="Website/js/underscore-min.js"></script>
+		<script type="text/javascript">
+		var Qns = [{question: "What is your name?"}, {question: "What is your favourite color?"}, {question: "What is the airspeed velocity of an unladen swallow?"}];
+		var Ans = [{answer: "Not at all"}, {answer: "Several days"}, {answer: "More than half the days"}, {answer: "Everyday"}];
+		var Results;
+		function generateQns(qns, id){
+			var optcomp = _.template($("#answertemplate").html());
+			var qnscomp = _.template($("#questiontemplate").html());
+			console.log(qns, id)
+			return qnscomp({qns: qns, qnsid: id, optcomp: optcomp});
+		}
+		$(document).ready(function(){
+			_.each(Qns, function(qns){
+				qns.options = Ans;
+			});
+
+			$("#questions").append(
+				_.reduce(Qns, function(memo, qns, id){
+					return memo + generateQns(qns, id);
+				}, "")
+			);
+			$("#anxiety-form").on("submit", function(e){
+				e.preventDefault();
+				Results = $("#anxiety-form").serializeArray();
+				console.log(Results);
+				renderResults(_.reduce(Results, function(memo, qns){return memo + parseInt(qns.value)}, 0));
+				$('.nav-tabs a[href="#results"]').tab('show');
+			});
+			$('.nav-tabs a').on('shown', function (e) {
+			    window.location.hash = e.target.hash;
+			})
+		});
+		function renderResults(score){
+    		var anxietyStatus = "minimal-anxiety";
+    		console.log(score);
+			if(score <= 4) anxietyStatus = "minimal-anxiety";
+			else if(score <= 9) anxietyStatus = "mild-anxiety";
+			else if(score <= 14) anxietyStatus = "moderate-anxiety";
+			else if(score <= 21) anxietyStatus = "severe-anxiety";
+			$(".results-analysis").not("[id="+anxietyStatus+"]").hide();
+			$(".results-analysis #anxietyStatus+").show();
+		}
+		</script>
+	</body>
+</html>
