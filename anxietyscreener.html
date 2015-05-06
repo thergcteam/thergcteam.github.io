@@ -5,7 +5,11 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>RGC Screener</title>
-
+		<style>
+			.redborder{
+				outline: 3px solid red;
+			}
+		</style>
 		<link href="Website/css/bootstrap.min.css" rel="stylesheet">
 		<link href="Website/css/app.css" rel="stylesheet">
 	</head>
@@ -66,7 +70,7 @@
 			
 		</div>
 		<script type = "text/template" id = "questiontemplate">
-		<div>
+		<div id = "<%= ['question', qnsid, 'wrapper'].join('-') %>">
 				<%= qns.question %>
 			<div class="row btn-group col-md-12 col-md-offset-1"  data-toggle="buttons">
 				<%
@@ -93,7 +97,7 @@
 		<script src="Website/js/bootstrap.min.js"></script>
 		<script src="Website/js/underscore-min.js"></script>
 		<script type="text/javascript">
-		var Qns = [{question: "What is your name?"}, {question: "What is your favourite color?"}, {question: "What is the airspeed velocity of an unladen swallow?"}];
+		var Qns =[{question: "Feeling nervous, anxious or on edge"}, {question: "Not being able to sleep or control owrrying"}, {question: "Worrying too much about different things"}, {question: "Trouble relaxing"}, {question: "Being so restless that it is hard to sit still"}, {question: "Becoming easily annoyed or irritable"}, {question: "Feeling afraid, as if something awful might happen"}];
 		var Ans = [{answer: "Not at all"}, {answer: "Several days"}, {answer: "More than half the days"}, {answer: "Everyday"}];
 		var Results;
 		function generateQns(qns, id){
@@ -116,8 +120,22 @@
 				e.preventDefault();
 				Results = $("#anxiety-form").serializeArray();
 				console.log(Results);
-				renderResults(_.reduce(Results, function(memo, qns){return memo + parseInt(qns.value)}, 0));
-				$('.nav-tabs a[href="#results"]').tab('show');
+				if(_.reduce(Qns, function(memo, qns, id){
+					if (!$("input[name='"+["question",id].join("-")+"']:checked").val()) {
+						$("#"+['question', id, 'wrapper'].join('-')).addClass("redborder");
+						return true;
+					}
+					else{
+						$("#"+['question', id, 'wrapper'].join('-')).removeClass("redborder");
+					}
+					return memo;
+				}, false)){
+					console.log("failed to pass");
+				}
+				else{
+					renderResults(_.reduce(Results, function(memo, qns){return memo + parseInt(qns.value)}, 0));
+					$('.nav-tabs a[href="#results"]').tab('show');
+				}
 			});
 			$('.nav-tabs a').on('shown', function (e) {
 			    window.location.hash = e.target.hash;
