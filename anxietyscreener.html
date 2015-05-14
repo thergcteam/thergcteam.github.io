@@ -21,12 +21,20 @@
 		<div class="container" style="width:100%">
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane active" id="screener">
+					<div style="padding-top: 20px; padding-bottom: 20px">
+						About anxiety.
+						Yada yada yada
+					</div>
 					<form id = "anxiety-form">
 						<div id = "questions"></div>
-						<button type="submit" class="btn btn-default">Submit</button>
+						<button type="submit" class="btn btn-block btn-default">Submit</button>
 					</form>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="results">
+					<div>
+						Generic results.
+						I am groot.
+					</div>
 					<div class = 'results-analysis' id = 'minimal-anxiety'>
 						<h2>Test results: minimal anxiety</h2>
 					</div>
@@ -38,6 +46,9 @@
 					</div>
 					<div class = 'results-analysis' id = 'severe-anxiety'>
 						<h2>Test results: severe anxiety</h2>
+					</div>
+					<div>
+						<button class = "btn btn-default" onclick = "resetScreener()">Back to screener</button>
 					</div>
 				</div>
 			</div>
@@ -61,10 +72,11 @@
 				%>
 			</div>
 		</div>
+		<hr style="background:#BBBBBB; border:0; height:1px" />
 		</script>
 		<script type = "text/template" id = "answertemplate">
 		<div class = "btn-group col-md-3 col-sm-3">
-		<label class="btn btn-primary center-block col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1" style="margin:10px;">
+		<label class="btn btn-primary center-block col-sm-12 col-md-10 col-md-offset-1" style="margin:10px;">
 			<input type="radio" name="<%= optname %>" id="<%= optid %>" value="<%= value %>" autocomplete="off">
 			<%= answer %>
 		</label>
@@ -76,7 +88,7 @@
 		<script src="Website/js/bootstrap.min.js"></script>
 		<script src="Website/js/underscore-min.js"></script>
 		<script type="text/javascript">
-		var Qns =[{question: "Feeling nervous, anxious or on edge"}, {question: "Not being able to sleep or control owrrying"}, {question: "Worrying too much about different things"}, {question: "Trouble relaxing"}, {question: "Being so restless that it is hard to sit still"}, {question: "Becoming easily annoyed or irritable"}, {question: "Feeling afraid, as if something awful might happen"}];
+		var Qns =[{question: "Feeling nervous, anxious or on edge"}, {question: "Not being able to sleep or control worrying"}, {question: "Worrying too much about different things"}, {question: "Trouble relaxing"}, {question: "Being so restless that it is hard to sit still"}, {question: "Becoming easily annoyed or irritable"}, {question: "Feeling afraid, as if something awful might happen"}];
 		var Ans = [{answer: "Not at all"}, {answer: "Several days"}, {answer: "Many days"}, {answer: "Everyday"}];
 		var Results;
 		function generateQns(qns, id){
@@ -113,11 +125,12 @@
 				}
 				else{
 					renderResults(_.reduce(Results, function(memo, qns){return memo + parseInt(qns.value)}, 0));
+					location.hash = "results";
 					$('.nav-tabs a[href="#results"]').tab('show');
 				}
 			});
 			$('.nav-tabs a').on('shown', function (e) {
-			    window.location.hash = e.target.hash;
+			    //window.location.hash = e.target.hash;
 			})
 		});
 		function renderResults(score){
@@ -129,6 +142,9 @@
 			else if(score <= 21) anxietyStatus = "severe-anxiety";
 			$(".results-analysis").not("[id="+anxietyStatus+"]").hide();
 			$(".results-analysis #anxietyStatus+").show();
+		}
+		function resetScreener(){
+			location.reload();
 		}
 		</script>
 	</body>
