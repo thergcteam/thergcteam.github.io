@@ -18,7 +18,7 @@
 			<li role="presentation" class="active"><a href="#screener" aria-controls="screener" role="tab" data-toggle="tab">screener</a></li>
 			<li role="presentation"><a href="#results" aria-controls="results" role="tab" data-toggle="tab">results</a></li>
 		</ul>
-		<div class="container">
+		<div class="container" style="width:100%">
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane active" id="screener">
 					<form id = "anxiety-form">
@@ -44,9 +44,12 @@
 			
 		</div>
 		<script type = "text/template" id = "questiontemplate">
-		<div id = "<%= ['question', qnsid, 'wrapper'].join('-') %>">
+		<div class = "container" style = "width:100%" id = "<%= ['question', qnsid, 'wrapper'].join('-') %>">
+			<p>
+				<%= qnsid+1 %>)
 				<%= qns.question %>
-			<div class="row btn-group col-md-12 col-md-offset-1"  data-toggle="buttons">
+			</p>
+			<div class="row col-md-12 col-sm-12"  data-toggle="buttons">
 				<%
 					print(_.map(qns.options, function(ans, id){
 						return optcomp({answer: ans.answer, 
@@ -60,10 +63,12 @@
 		</div>
 		</script>
 		<script type = "text/template" id = "answertemplate">
-		<label class="btn btn-primary col-md-2" style="margin:10px">
+		<div class = "btn-group col-md-3 col-sm-3">
+		<label class="btn btn-primary center-block col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1" style="margin:10px;">
 			<input type="radio" name="<%= optname %>" id="<%= optid %>" value="<%= value %>" autocomplete="off">
 			<%= answer %>
 		</label>
+		</div>
 		</script>
 
 
@@ -72,7 +77,7 @@
 		<script src="Website/js/underscore-min.js"></script>
 		<script type="text/javascript">
 		var Qns =[{question: "Feeling nervous, anxious or on edge"}, {question: "Not being able to sleep or control owrrying"}, {question: "Worrying too much about different things"}, {question: "Trouble relaxing"}, {question: "Being so restless that it is hard to sit still"}, {question: "Becoming easily annoyed or irritable"}, {question: "Feeling afraid, as if something awful might happen"}];
-		var Ans = [{answer: "Not at all"}, {answer: "Several days"}, {answer: "More than half the days"}, {answer: "Everyday"}];
+		var Ans = [{answer: "Not at all"}, {answer: "Several days"}, {answer: "Many days"}, {answer: "Everyday"}];
 		var Results;
 		function generateQns(qns, id){
 			var optcomp = _.template($("#answertemplate").html());
