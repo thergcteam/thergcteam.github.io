@@ -2,3 +2,6 @@
 	background-color: #bed4df;
 	color: #fff;
 }
+td, th {
+	padding: 10px;
+}
